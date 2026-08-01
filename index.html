@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A responsive full-stack 15 Puzzle with beach-themed modes and a persistent leaderboard.">
+  <title>Creatures, Waves & Bites | 15 Puzzle</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">CSC 4370/6370 · Project 2</p>
+      <h1>Creatures, Waves &amp; Bites</h1>
+      <p class="subtitle">A full-stack beach-themed 15 Puzzle</p>
+    </div>
+    <button id="themeToggle" class="secondary-btn" type="button" aria-pressed="false">
+      Night Mode
+    </button>
+  </header>
+
+  <main class="app-shell">
+    <section class="game-card" aria-labelledby="gameTitle">
+      <div class="mode-row">
+        <div>
+          <h2 id="gameTitle">15 Puzzle Challenge</h2>
+          <p id="modeDescription">Reef creatures in bright shallow water.</p>
+        </div>
+
+        <label class="mode-label" for="modeSelect">
+          Puzzle Mode
+          <select id="modeSelect">
+            <option value="creatures">Creatures Mode</option>
+            <option value="waves">Waves Mode</option>
+            <option value="bites">Bites Mode</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="stats" aria-label="Current game statistics">
+        <div><span class="stat-label">Time</span><strong id="timer">00:00</strong></div>
+        <div><span class="stat-label">Moves</span><strong id="moveCount">0</strong></div>
+        <div><span class="stat-label">Hints</span><strong id="hintCount">3</strong></div>
+      </div>
+
+      <div class="board-wrap">
+        <div id="previewOverlay" class="preview-overlay" hidden>
+          <img id="previewImage" src="assets/creatures.svg" alt="Completed puzzle preview">
+        </div>
+
+        <div
+          id="puzzleBoard"
+          class="puzzle-board"
+          role="grid"
+          aria-label="15 puzzle board"
+          aria-describedby="boardHelp"
+        ></div>
+      </div>
+
+      <p id="boardHelp" class="help-text">
+        Click a tile beside the empty space, or use the arrow keys.
+      </p>
+
+      <div class="controls">
+        <button id="newGameBtn" class="primary-btn" type="button">New Game</button>
+        <button id="hintBtn" class="secondary-btn" type="button">Magic Hint</button>
+        <button id="previewBtn" class="secondary-btn" type="button">Hold to Preview</button>
+      </div>
+
+      <div id="statusMessage" class="status-message" aria-live="polite">
+        Choose a mode and start a new game.
+      </div>
+    </section>
+
+    <aside class="side-column">
+      <section class="panel" aria-labelledby="leaderboardTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Persistent Scores</p>
+            <h2 id="leaderboardTitle">Leaderboard</h2>
+          </div>
+          <button id="refreshScoresBtn" class="text-btn" type="button">Refresh</button>
+        </div>
+
+        <form id="scoreForm" class="score-form">
+          <label for="playerName">Player name</label>
+          <div class="inline-form">
+            <input
+              id="playerName"
+              name="playerName"
+              type="text"
+              maxlength="50"
+              autocomplete="name"
+              placeholder="Enter your name"
+              required
+            >
+            <button id="saveScoreBtn" class="primary-btn" type="submit" disabled>
+              Save Score
+            </button>
+          </div>
+          <p id="scoreFormHelp" class="help-text">
+            Solve the puzzle before saving a score.
+          </p>
+        </form>
+
+        <ol id="leaderboardList" class="leaderboard-list" aria-live="polite">
+          <li class="empty-state">No scores yet.</li>
+        </ol>
+      </section>
+
+      <section class="panel" aria-labelledby="sessionTitle">
+        <p class="eyebrow">Browser Session</p>
+        <h2 id="sessionTitle">Game Analytics</h2>
+        <dl class="analytics-list">
+          <div><dt>Games completed</dt><dd id="gamesCompleted">0</dd></div>
+          <div><dt>Average moves</dt><dd id="averageMoves">0</dd></div>
+          <div><dt>Average solve time</dt><dd id="averageTime">00:00</dd></div>
+        </dl>
+      </section>
+    </aside>
+  </main>
+
+  <div id="winModal" class="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+      <button id="closeModalBtn" class="modal-close" type="button" aria-label="Close">×</button>
+      <img id="winImage" src="assets/bites.svg" alt="">
+      <p class="eyebrow">Puzzle Complete</p>
+      <h2 id="winTitle">You solved it!</h2>
+      <p id="winSummary"></p>
+      <button id="playAgainBtn" class="primary-btn" type="button">Play Again</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Created by Hayley Vu &amp; Nour Khoulani · Summer 2026</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+<defs>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#d8ffff"/>
+    <stop offset=".4" stop-color="#4ed9d1"/>
+    <stop offset="1" stop-color="#087f8a"/>
+  </linearGradient>
+  <pattern id="ripples" width="120" height="60" patternUnits="userSpaceOnUse">
+    <path d="M0 30 Q30 0 60 30 T120 30" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="10"/>
+  </pattern>
+</defs>
+<rect width="800" height="800" fill="url(#water)"/>
+<rect width="800" height="800" fill="url(#ripples)"/>
+<path d="M90 280 C180 210 280 220 350 280 C280 330 180 350 90 280Z" fill="#284f60"/>
+<path d="M350 280 L470 225 L435 300 L480 350 Z" fill="#284f60"/>
+<path d="M220 250 L270 165 L300 260Z" fill="#284f60"/>
+<circle cx="135" cy="270" r="8" fill="#fff"/>
+<path d="M360 520 C470 430 610 450 690 530 C590 605 455 615 360 520Z" fill="#1a5364"/>
+<path d="M690 530 L790 475 L760 555 L800 610 Z" fill="#1a5364"/>
+<path d="M520 485 L570 390 L610 500Z" fill="#1a5364"/>
+<circle cx="420" cy="510" r="8" fill="#fff"/>
+<path d="M90 690 Q260 620 400 700 T800 675 V800 H0 V730Z" fill="#f7efce" opacity=".9"/>
+</svg>

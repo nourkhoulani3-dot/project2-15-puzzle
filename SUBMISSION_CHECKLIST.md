@@ -1,0 +1,22 @@
+# Project 2 Submission Checklist
+
+- [ ] Replace database placeholders in `api/db.php`
+- [ ] Create the table using `sql/schema.sql`
+- [ ] Upload the complete folder to CODD
+- [ ] Confirm all three puzzle modes load
+- [ ] Confirm every shuffled puzzle is playable
+- [ ] Confirm timer and move counter work
+- [ ] Confirm Magic Hint stops after three uses
+- [ ] Confirm Preview appears while the button is held
+- [ ] Confirm keyboard controls work
+- [ ] Confirm Day/Night mode works
+- [ ] Confirm score saving works with MySQL
+- [ ] Disconnect the database temporarily and confirm localStorage fallback
+- [ ] Test phone, tablet, and desktop layouts
+- [ ] Check browser console for errors
+- [ ] Include proposal
+- [ ] Include README
+- [ ] Include reflection if required
+- [ ] Include live CODD URL
+- [ ] Include GitHub URL if required
+- [ ] Create final ZIP
