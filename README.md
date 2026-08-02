@@ -40,10 +40,14 @@ The board is represented by a one-dimensional JavaScript array containing values
 │   └── style.css
 ├── js/
 │   └── app.js
-├── assets/
-│   ├── creatures.svg
-│   ├── waves.svg
-│   └── bites.svg
+├── img/
+│   ├── CreaturesMode.jpg
+│   ├── WavesMode.jpg
+│   └── BitesMode.jpg
+├── audio/
+│   ├── CreaturesAudio.mp3
+│   ├── WaveAudio.mp3
+│   └── BitesAudio.mp3
 ├── api/
 │   ├── db.php
 │   ├── score.php
