@@ -45,7 +45,7 @@
 
       <div class="board-wrap">
         <div id="previewOverlay" class="preview-overlay" hidden>
-          <img id="previewImage" src="assets/creatures.svg" alt="Completed puzzle preview">
+          <img id="previewImage" src="img/CreaturesMode.jpg" alt="Completed puzzle preview">
         </div>
 
         <div
@@ -65,6 +65,9 @@
         <button id="newGameBtn" class="primary-btn" type="button">New Game</button>
         <button id="hintBtn" class="secondary-btn" type="button">Magic Hint</button>
         <button id="previewBtn" class="secondary-btn" type="button">Hold to Preview</button>
+        <button id="musicBtn" class="secondary-btn" type="button" aria-pressed="false">
+          Start Music
+        </button>
       </div>
 
       <div id="statusMessage" class="status-message" aria-live="polite">
@@ -123,7 +126,7 @@
   <div id="winModal" class="modal" hidden>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="winTitle">
       <button id="closeModalBtn" class="modal-close" type="button" aria-label="Close">×</button>
-      <img id="winImage" src="assets/bites.svg" alt="">
+      <img id="winImage" src="img/BitesMode.jpg" alt="">
       <p class="eyebrow">Puzzle Complete</p>
       <h2 id="winTitle">You solved it!</h2>
       <p id="winSummary"></p>

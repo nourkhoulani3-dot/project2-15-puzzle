@@ -10,17 +10,20 @@ const MODES = {
   creatures: {
     label: "Creatures Mode",
     description: "Reef creatures in bright shallow water.",
-    image: "assets/creatures.svg"
+    image: "img/CreaturesMode.jpg",
+    audio: "audio/CreaturesAudio.mp3"
   },
   waves: {
     label: "Waves Mode",
     description: "A surfer moving through deep teal waves.",
-    image: "assets/waves.svg"
+    image: "img/WavesMode.jpg",
+    audio: "audio/WaveAudio.mp3"
   },
   bites: {
     label: "Bites Mode",
     description: "A colorful beachside fruit bowl reward.",
-    image: "assets/bites.svg"
+    image: "img/BitesMode.jpg",
+    audio: "audio/BitesAudio.mp3"
   }
 };
 
@@ -34,6 +37,7 @@ let gameSolved = false;
 let currentMode = "creatures";
 let winningScore = null;
 let sessionResults = [];
+let musicPlaying = false;
 
 const boardElement = document.getElementById("puzzleBoard");
 const timerElement = document.getElementById("timer");
@@ -51,6 +55,9 @@ const leaderboardList = document.getElementById("leaderboardList");
 const winModal = document.getElementById("winModal");
 const winImage = document.getElementById("winImage");
 const winSummary = document.getElementById("winSummary");
+const musicButton = document.getElementById("musicBtn");
+const themeAudio = new Audio(MODES[currentMode].audio);
+themeAudio.loop = true;
 
 function solvedBoard() {
   return Array.from({ length: TILE_COUNT }, (_, index) =>
@@ -468,11 +475,48 @@ scoreForm.addEventListener("submit", async event => {
   await loadLeaderboard();
 });
 
+function updateMusicButton() {
+  musicButton.textContent = musicPlaying ? "Stop Music" : "Start Music";
+  musicButton.setAttribute("aria-pressed", String(musicPlaying));
+}
+
+async function playModeMusic() {
+  themeAudio.src = MODES[currentMode].audio;
+  themeAudio.currentTime = 0;
+
+  try {
+    await themeAudio.play();
+    musicPlaying = true;
+  } catch (error) {
+    musicPlaying = false;
+    statusMessage.textContent = "Unable to play music in this browser.";
+  }
+
+  updateMusicButton();
+}
+
+function stopModeMusic() {
+  themeAudio.pause();
+  themeAudio.currentTime = 0;
+  musicPlaying = false;
+  updateMusicButton();
+}
+
+async function toggleMusic() {
+  if (musicPlaying) {
+    stopModeMusic();
+    return;
+  }
+
+  await playModeMusic();
+}
+
 document.getElementById("newGameBtn").addEventListener("click", newGame);
 document.getElementById("hintBtn").addEventListener("click", showHint);
 document.getElementById("refreshScoresBtn").addEventListener("click", loadLeaderboard);
 document.getElementById("closeModalBtn").addEventListener("click", closeWinModal);
 document.getElementById("playAgainBtn").addEventListener("click", newGame);
+musicButton.addEventListener("click", toggleMusic);
 
 const previewButton = document.getElementById("previewBtn");
 ["mousedown", "touchstart"].forEach(eventName =>
@@ -493,6 +537,13 @@ modeSelect.addEventListener("change", async event => {
     "--tile-image",
     `url("../${MODES[currentMode].image}")`
   );
+
+  if (musicPlaying) {
+    await playModeMusic();
+  } else {
+    themeAudio.src = MODES[currentMode].audio;
+  }
+
   await loadLeaderboard();
   newGame();
 });

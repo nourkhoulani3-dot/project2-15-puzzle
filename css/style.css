@@ -9,7 +9,7 @@
   --accent-strong: #075e5a;
   --shadow: 0 18px 45px rgba(12, 77, 73, 0.12);
   --radius: 22px;
-  --tile-image: url("../assets/creatures.svg");
+  --tile-image: url("../img/CreaturesMode.jpg");
 }
 
 body.dark {
