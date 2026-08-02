@@ -34,10 +34,13 @@ let moves = 0;
 let hintsRemaining = MAX_HINTS;
 let gameStarted = false;
 let gameSolved = false;
+let isPaused = false;
 let currentMode = "creatures";
 let winningScore = null;
 let sessionResults = [];
 let musicPlaying = false;
+let undoStack = [];
+let redoStack = [];
 
 const boardElement = document.getElementById("puzzleBoard");
 const timerElement = document.getElementById("timer");
@@ -56,6 +59,9 @@ const winModal = document.getElementById("winModal");
 const winImage = document.getElementById("winImage");
 const winSummary = document.getElementById("winSummary");
 const musicButton = document.getElementById("musicBtn");
+const pauseButton = document.getElementById("pauseBtn");
+const undoButton = document.getElementById("undoBtn");
+const redoButton = document.getElementById("redoBtn");
 const themeAudio = new Audio(MODES[currentMode].audio);
 themeAudio.loop = true;
 
@@ -141,13 +147,45 @@ function renderBoard() {
   });
 }
 
+function updateHistoryButtons() {
+  undoButton.disabled = undoStack.length === 0 || gameSolved || isPaused;
+  redoButton.disabled = redoStack.length === 0 || gameSolved || isPaused;
+}
+
+function updatePauseButton() {
+  pauseButton.textContent = isPaused ? "Resume" : "Pause";
+  pauseButton.setAttribute("aria-pressed", String(isPaused));
+  pauseButton.disabled = !gameStarted || gameSolved;
+  boardElement.classList.toggle("paused", isPaused);
+  updateHistoryButtons();
+}
+
+function snapshotBoard() {
+  return {
+    board: [...boardState],
+    moves
+  };
+}
+
+function applySnapshot(snapshot) {
+  boardState = [...snapshot.board];
+  moves = snapshot.moves;
+  moveCountElement.textContent = String(moves);
+  renderBoard();
+  updateHistoryButtons();
+}
+
 function moveTile(index) {
-  if (!canMove(index) || gameSolved) return;
+  if (!canMove(index) || gameSolved || isPaused) return;
 
   if (!gameStarted) {
     gameStarted = true;
     startTimer();
+    updatePauseButton();
   }
+
+  undoStack.push(snapshotBoard());
+  redoStack = [];
 
   const emptyIndex = boardState.indexOf(0);
   swapTiles(index, emptyIndex);
@@ -155,10 +193,47 @@ function moveTile(index) {
   moveCountElement.textContent = String(moves);
   statusMessage.textContent = `Moved tile ${boardState[emptyIndex]}.`;
   renderBoard();
+  updateHistoryButtons();
 
   if (isSolved()) {
     finishGame();
   }
+}
+
+function undoMove() {
+  if (undoStack.length === 0 || gameSolved || isPaused) return;
+
+  redoStack.push(snapshotBoard());
+  applySnapshot(undoStack.pop());
+  statusMessage.textContent = "Move undone.";
+}
+
+function redoMove() {
+  if (redoStack.length === 0 || gameSolved || isPaused) return;
+
+  undoStack.push(snapshotBoard());
+  applySnapshot(redoStack.pop());
+  statusMessage.textContent = "Move redone.";
+
+  if (isSolved()) {
+    finishGame();
+  }
+}
+
+function togglePause() {
+  if (!gameStarted || gameSolved) return;
+
+  isPaused = !isPaused;
+
+  if (isPaused) {
+    stopTimer();
+    statusMessage.textContent = "Game paused. Press Resume to continue.";
+  } else {
+    startTimer();
+    statusMessage.textContent = "Game resumed.";
+  }
+
+  updatePauseButton();
 }
 
 function isSolved() {
@@ -214,14 +289,19 @@ function newGame() {
   hintsRemaining = MAX_HINTS;
   gameStarted = false;
   gameSolved = false;
+  isPaused = false;
   winningScore = null;
+  undoStack = [];
+  redoStack = [];
 
   timerElement.textContent = "00:00";
   moveCountElement.textContent = "0";
   hintCountElement.textContent = String(MAX_HINTS);
   saveScoreBtn.disabled = true;
+  saveScoreBtn.textContent = "Save Score";
   statusMessage.textContent = "New solvable puzzle created. Make your first move.";
   renderBoard();
+  updatePauseButton();
   closeWinModal();
 }
 
@@ -263,6 +343,11 @@ function bestHintIndex() {
 }
 
 function showHint() {
+  if (isPaused) {
+    statusMessage.textContent = "Resume the game to use a hint.";
+    return;
+  }
+
   if (gameSolved) {
     statusMessage.textContent = "The puzzle is already solved.";
     return;
@@ -293,7 +378,9 @@ function showHint() {
 
 function finishGame() {
   gameSolved = true;
+  isPaused = false;
   stopTimer();
+  updatePauseButton();
 
   winningScore = {
     player_name: "",
@@ -309,6 +396,7 @@ function finishGame() {
   updateAnalytics();
 
   saveScoreBtn.disabled = false;
+  saveScoreBtn.textContent = "Save Score";
   winImage.src = MODES[currentMode].image;
   winSummary.textContent =
     `You finished ${MODES[currentMode].label} in ${formatTime(elapsedSeconds)} with ${moves} moves.`;
@@ -517,6 +605,9 @@ document.getElementById("refreshScoresBtn").addEventListener("click", loadLeader
 document.getElementById("closeModalBtn").addEventListener("click", closeWinModal);
 document.getElementById("playAgainBtn").addEventListener("click", newGame);
 musicButton.addEventListener("click", toggleMusic);
+pauseButton.addEventListener("click", togglePause);
+undoButton.addEventListener("click", undoMove);
+redoButton.addEventListener("click", redoMove);
 
 const previewButton = document.getElementById("previewBtn");
 ["mousedown", "touchstart"].forEach(eventName =>
@@ -555,6 +646,8 @@ document.getElementById("themeToggle").addEventListener("click", event => {
 });
 
 document.addEventListener("keydown", event => {
+  if (isPaused || gameSolved) return;
+
   if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
     return;
   }
@@ -575,4 +668,5 @@ document.addEventListener("keydown", event => {
 });
 
 renderBoard();
+updatePauseButton();
 loadLeaderboard();

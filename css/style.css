@@ -248,6 +248,11 @@ input {
   background: rgba(255,255,255,.18);
 }
 
+.puzzle-board.paused {
+  opacity: .72;
+  pointer-events: none;
+}
+
 .preview-overlay {
   position: absolute;
   inset: 0;
@@ -298,6 +303,11 @@ input {
   background: var(--surface);
   color: var(--text);
   padding: .8rem 1.1rem;
+}
+
+.secondary-btn:disabled {
+  opacity: .48;
+  cursor: not-allowed;
 }
 
 .text-btn {
